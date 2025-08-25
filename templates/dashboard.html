@@ -1,0 +1,713 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 0 2rem 0;
+        margin-top: 70px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0 10c10-5 20 5 30 0s20-5 30 0 20 5 30 0 20-5 30 0v10H0z" fill="rgba(255,255,255,0.1)"/></svg>') repeat-x;
+        background-size: 200px 40px;
+        animation: wave 15s linear infinite;
+    }
+
+    @keyframes wave {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-200px); }
+    }
+
+    .dashboard-container {
+        padding: 3rem 0;
+        background: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .stats-cards {
+        margin-top: -80px;
+        position: relative;
+        z-index: 10;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+        height: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin: 0 auto 1rem;
+    }
+
+    .stat-icon.flights { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .stat-icon.hotels { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .stat-icon.packages { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-weight: 600;
+    }
+
+    .dashboard-section {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+    }
+
+    .section-header {
+        padding: 2rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .section-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .section-icon.flights { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .section-icon.hotels { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .section-icon.packages { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+    .btn-book {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-book:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-container {
+        padding: 0;
+        overflow-x: auto;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+    .modern-table th {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        color: #2c3e50;
+        padding: 1.5rem 1rem;
+        font-weight: 600;
+        text-align: left;
+        border-bottom: 2px solid #dee2e6;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .modern-table td {
+        padding: 1.25rem 1rem;
+        border-bottom: 1px solid #f1f3f4;
+        vertical-align: middle;
+        transition: all 0.3s ease;
+    }
+
+    .modern-table tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .modern-table tbody tr:hover {
+        background: #f8f9fa;
+        transform: scale(1.01);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .data-cell {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #6c757d;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #495057;
+    }
+
+    .empty-text {
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    .badge-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 2rem 0 1rem 0;
+        }
+        
+        .stats-cards {
+            margin-top: -40px;
+        }
+        
+        .stat-card {
+            margin-bottom: 1rem;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .modern-table {
+            font-size: 0.9rem;
+        }
+        
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .btn-cancel {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+        }
+    }
+
+    /* Animation for loading */
+    .dashboard-section {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .dashboard-section:nth-child(1) { animation-delay: 0.1s; }
+    .dashboard-section:nth-child(2) { animation-delay: 0.2s; }
+    .dashboard-section:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Custom scrollbar for tables */
+    .table-container::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<section class="dashboard-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="mb-3">
+                    <i class="fas fa-tachometer-alt me-3"></i>My Travel Dashboard
+                </h1>
+                <p class="fs-5 mb-0">Manage all your bookings and travel plans in one place</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-column align-items-lg-end">
+                    <small class="text-white-50">Welcome back!</small>
+                    <h5 class="mb-0">{{ user.first_name|default:"Traveler" }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Cards -->
+<div class="container">
+    <div class="stats-cards">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon flights">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <div class="stat-number">{{ flight_bookings|length }}</div>
+                    <div class="stat-label">Flight Bookings</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon hotels">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <div class="stat-number">{{ hotel_bookings|length }}</div>
+                    <div class="stat-label">Hotel Reservations</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon packages">
+                        <i class="fas fa-suitcase-rolling"></i>
+                    </div>
+                    <div class="stat-number">{{ packages|length }}</div>
+                    <div class="stat-label">Travel Packages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Content -->
+<div class="dashboard-container">
+    <div class="container">
+        
+        <!-- Flights Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <div class="section-icon flights">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    Flight Bookings
+                    <span class="badge-info">{{ flight_bookings|length }} booking(s)</span>
+                </h2>
+                <a href="{% url 'flights' %}" class="btn-book">
+                    <i class="fas fa-plus"></i>Book New Flight
+                </a>
+            </div>
+            
+            <div class="table-container">
+                {% if flight_bookings %}
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag me-2"></i>Flight Number</th>
+                                <th><i class="fas fa-calendar me-2"></i>Date</th>
+                                <th><i class="fas fa-cog me-2"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for flight in flight_bookings %}
+                            <tr>
+                                <td class="data-cell">
+                                    <strong>{{ flight.flight }}</strong>
+                                </td>
+                                <td class="data-cell">
+                                    <i class="fas fa-calendar-alt me-2 text-muted"></i>{{ flight.flight.flight_date }}
+                                </td>
+                                <td>
+                                    {% if flight.status != "CANCELLED" %}
+                                        <a href="{% url 'cancel_booking' 'flight' flight.id %}" 
+                                        class="btn-cancel" 
+                                        onclick="return confirmCancel('flight')">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </a>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <h3 class="empty-title">No Flight Bookings</h3>
+                        <p class="empty-text">You haven't booked any flights yet. Start planning your next adventure!</p>
+                        <a href="{% url 'flights' %}" class="btn-book">
+                            <i class="fas fa-search"></i>Find Flights
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Hotels Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <div class="section-icon hotels">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    Hotel Reservations
+                    <span class="badge-info">{{ hotel_bookings|length }} reservation(s)</span>
+                </h2>
+                <a href="{% url 'hotels' %}" class="btn-book">
+                    <i class="fas fa-plus"></i>Book New Hotel
+                </a>
+            </div>
+            
+            <div class="table-container">
+                {% if hotel_bookings %}
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hotel me-2"></i>Hotel Name</th>
+                                <th><i class="fas fa-calendar me-2"></i>Check-in date</th>
+                                <th><i class="fas fa-calendar me-2"></i>Checkout date</th>
+                                <th><i class="fas fa-door-open me-2"></i>Rooms</th>
+                                <th><i class="fas fa-cog me-2"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hotel in hotel_bookings %}
+                            <tr>
+                                <td class="data-cell">
+                                    <strong>{{ hotel.hotel }}</strong>
+                                </td>
+                                <td class="data-cell">
+                                    <i class="fas fa-calendar-alt me-2 text-muted"></i>{{ hotel.check_in_date }}
+                                </td>
+                                <td class="data-cell">
+                                    <i class="fas fa-calendar-alt me-2 text-muted"></i>{{ hotel.check_out_date }}
+                                </td>
+                                <td class="data-cell">
+                                    <i class="fas fa-bed me-2 text-muted"></i>{{ hotel.rooms_count }} room(s)
+                                </td>
+                                <td>
+                                    {% if hotel.status != "CANCELLED" %}
+                                        <a href="{% url 'cancel_booking' 'hotel' hotel.id %}" 
+                                        class="btn-cancel" 
+                                        onclick="return confirmCancel('hotel')">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </a>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <h3 class="empty-title">No Hotel Reservations</h3>
+                        <p class="empty-text">You haven't reserved any hotels yet. Book your perfect stay now!</p>
+                        <a href="{% url 'hotels' %}" class="btn-book">
+                            <i class="fas fa-search"></i>Find Hotels
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Packages Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <div class="section-icon packages">
+                        <i class="fas fa-suitcase-rolling"></i>
+                    </div>
+                    Travel Packages
+                    <span class="badge-info">{{ packages|length }} package(s)</span>
+                </h2>
+                <a href="{% url 'package' %}" class="btn-book">
+                    <i class="fas fa-plus"></i>Book New Package
+                </a>
+            </div>
+            
+            <div class="table-container">
+                {% if packages %}
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-plane me-2"></i>Flight</th>
+                                <th><i class="fas fa-chair me-2"></i>Seats</th>
+                                <th><i class="fas fa-hotel me-2"></i>Hotel</th>
+                                <th><i class="fas fa-door-open me-2"></i>Rooms</th>
+                                <th><i class="fas fa-calendar me-2"></i>Date</th>
+                                <th><i class="fas fa-cog me-2"></i>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for package in packages %}
+                            <tr>
+                                <td class="data-cell">
+                                    <strong>{{ package.flight }}</strong>
+                                </td>
+                                <td class="data-cell">
+                                    <i class="fas fa-users me-2 text-muted"></i>{{ package.seat }}
+                                </td>
+                                <td class="data-cell">
+                                    <strong>{{ package.hotel_name }}</strong>
+                                </td>
+                                <td class="data-cell">
+                                    <i class="fas fa-bed me-2 text-muted"></i>{{ package.room }}
+                                </td>
+                                <td class="data-cell">
+                                    <i class="fas fa-calendar-alt me-2 text-muted"></i>{{ package.date }}
+                                </td>
+                                <td>
+                                    <a href="/cancelpackage/{{ package.flight }}/{{ package.seat }}/{{ package.hotel_name }}/{{ package.date }}/{{ package.room }}" 
+                                       class="btn-cancel" 
+                                       onclick="return confirmCancel('travel package')">
+                                        <i class="fas fa-times"></i>Cancel
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-suitcase-rolling"></i>
+                        </div>
+                        <h3 class="empty-title">No Travel Packages</h3>
+                        <p class="empty-text">You haven't booked any packages yet. Get the best deals with our complete travel packages!</p>
+                        <a href="{% url 'package' %}" class="btn-book">
+                            <i class="fas fa-search"></i>Browse Packages
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate stats on load
+        animateStats();
+        
+        // Add loading states to buttons
+        addButtonLoadingStates();
+        
+        // Initialize tooltips if Bootstrap is available
+        if (typeof bootstrap !== 'undefined') {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+    });
+
+    function animateStats() {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        
+        statNumbers.forEach(stat => {
+            const finalValue = parseInt(stat.textContent);
+            let currentValue = 0;
+            const increment = Math.ceil(finalValue / 20);
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    stat.textContent = finalValue;
+                    clearInterval(timer);
+                } else {
+                    stat.textContent = currentValue;
+                }
+            }, 50);
+        });
+    }
+
+    function confirmCancel(type) {
+        return confirm(`Are you sure you want to cancel this ${type}? This action cannot be undone.`);
+    }
+
+    function addButtonLoadingStates() {
+        const buttons = document.querySelectorAll('.btn-book, .btn-cancel');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                const loadingText = this.classList.contains('btn-cancel') ? 
+                    '<i class="fas fa-spinner fa-spin me-2"></i>Canceling...' : 
+                    '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+                
+                this.innerHTML = loadingText;
+                this.disabled = true;
+                
+                // Re-enable after 3 seconds in case of issues
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 3000);
+            });
+        });
+    }
+
+    // Add smooth scroll to sections
+    function scrollToSection(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+
+    // Show success message after booking
+    function showSuccessMessage(message) {
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.parentNode.removeChild(alert);
+            }
+        }, 5000);
+    }
+
+    // Check for success parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    if (success) {
+        let message = 'Operation completed successfully!';
+        switch(success) {
+            case 'flight_booked':
+                message = 'Flight booked successfully!';
+                break;
+            case 'hotel_booked':
+                message = 'Hotel reservation confirmed!';
+                break;
+            case 'package_booked':
+                message = 'Travel package booked successfully!';
+                break;
+            case 'cancelled':
+                message = 'Booking cancelled successfully!';
+                break;
+        }
+        showSuccessMessage(message);
+    }
+</script>
+{% endblock %}

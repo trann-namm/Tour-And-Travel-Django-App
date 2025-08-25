@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book Flight - TravelBooking{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/book_flight.css' %}">
+<style>
+    .booking-section {
+        padding: 2rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+    .flight-details {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .flight-details h5 {
+        margin-bottom: 0.5rem;
+    }
+    .btn-confirm {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .btn-confirm:hover {
+        background-color: #1e7e34;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4">Book Flight</h2>
+
+    <!-- Flight Info -->
+    <div class="flight-details">
+        <h5>{{ flight.airline.name }}</h5>
+        <p><strong>From:</strong> {{ flight.source_city.name }} → <strong>To:</strong> {{ flight.destination_city.name }}</p>
+        <p><strong>Date:</strong> {{ flight.flight_date }}</p>
+        <p><strong>Economy Price:</strong> {{ flight.economy_price }}</p>
+        <p><strong>Business Price:</strong> {{ flight.business_price }}</p>
+    </div>
+
+    <!-- Booking Form -->
+    <div class="booking-section">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-confirm">Confirm Booking</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

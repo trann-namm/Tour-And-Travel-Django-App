@@ -1,0 +1,873 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+/* Enhanced Places/Attractions Page Styles */
+
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --accent-color: #e74c3c;
+    --warning-color: #f39c12;
+    --success-color: #27ae60;
+    --info-color: #3498db;
+    --dark-text: #2c3e50;
+    --light-bg: #f8f9fa;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-accent: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    --gradient-nature: linear-gradient(135deg, #a8e6cf 0%, #56ab2f 100%);
+    --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1);
+    --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.15);
+    --shadow-intense: 0 25px 50px rgba(0, 0, 0, 0.2);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-radius: 20px;
+}
+
+/* Header Section */
+.places-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 4rem 0 3rem 0;
+    margin-top: 70px;
+    position: relative;
+    overflow: hidden;
+}
+
+.places-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0 10c10-5 20 5 30 0s20-5 30 0 20 5 30 0 20-5 30 0v10H0z" fill="rgba(255,255,255,0.1)"/></svg>') repeat-x;
+    background-size: 200px 40px;
+    animation: wave 12s linear infinite;
+    opacity: 0.7;
+}
+
+.places-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+@keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-200px); }
+}
+
+.places-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.places-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* Main Container */
+.container {
+    position: relative;
+}
+
+.container h2 {
+    color: var(--dark-text);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.container h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 70%;
+    height: 4px;
+    background: var(--gradient-nature);
+    border-radius: 2px;
+}
+
+.container h3 {
+    color: var(--dark-text);
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin: 3rem 0 2rem 0;
+    padding: 1rem 0;
+    border-bottom: 3px solid var(--secondary-color);
+    position: relative;
+    display: inline-block;
+}
+
+.container h3::before {
+    content: '🏛️';
+    position: absolute;
+    left: -2.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+}
+
+/* Search Section */
+.search-section {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2.5rem;
+    margin: -50px auto 3rem auto;
+    box-shadow: var(--shadow-heavy);
+    position: relative;
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+/* Form Styling */
+.search-section form .form-control,
+.search-section form .form-select,
+.search-section form input,
+.search-section form select {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: #fafbfc;
+}
+
+.search-section form .form-control:focus,
+.search-section form .form-select:focus,
+.search-section form input:focus,
+.search-section form select:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.15);
+    background: white;
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.search-section form label {
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.search-section .btn-primary {
+    background: var(--gradient-nature);
+    border: none;
+    color: white;
+    padding: 0.85rem 2.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-section .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+}
+
+.search-section .btn-primary:hover::before {
+    left: 100%;
+}
+
+.search-section .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.6);
+    color: white;
+}
+
+/* Attraction Cards */
+.attraction-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: var(--transition);
+    border: 1px solid #f0f2f5;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.attraction-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-nature);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.attraction-card::after {
+    content: '';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-nature);
+    border-radius: 50%;
+    opacity: 0.1;
+    transition: var(--transition);
+    transform: scale(0);
+}
+
+.attraction-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-intense);
+    border-color: var(--secondary-color);
+}
+
+.attraction-card:hover::before {
+    opacity: 1;
+}
+
+.attraction-card:hover::after {
+    transform: scale(1);
+    opacity: 0.15;
+}
+
+/* Card Content */
+.attraction-card h5 {
+    color: var(--dark-text);
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.attraction-card h5::before {
+    content: '📍';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2rem;
+}
+
+.attraction-card p {
+    margin-bottom: 1rem;
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.attraction-card p strong {
+    color: var(--dark-text);
+    font-weight: 600;
+    min-width: 80px;
+    display: inline-block;
+}
+
+/* City styling */
+.attraction-card p:has(strong:contains("City")) {
+    background: rgba(46, 204, 113, 0.1);
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.attraction-card p:has(strong:contains("City"))::before {
+    content: '🏙️';
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* Category styling */
+.attraction-card p:has(strong:contains("Category")) {
+    background: rgba(52, 152, 219, 0.1);
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.attraction-card p:has(strong:contains("Category"))::before {
+    content: '🎯';
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* Entry fee styling */
+.attraction-card p:has(strong:contains("Entry Fee")) {
+    background: rgba(243, 156, 18, 0.1);
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--warning-color);
+}
+
+.attraction-card p:has(strong:contains("Entry Fee"))::before {
+    content: '💰';
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* Free entry special styling */
+.attraction-card p:contains("Free") {
+    background: rgba(39, 174, 96, 0.1) !important;
+    border-left-color: var(--success-color) !important;
+}
+
+.attraction-card p:contains("Free")::before {
+    content: '🆓' !important;
+}
+
+/* Detail Button */
+.btn-detail {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    margin-top: auto;
+    text-align: center;
+    align-self: flex-start;
+}
+
+.btn-detail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+}
+
+.btn-detail:hover::before {
+    left: 100%;
+}
+
+.btn-detail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-detail::after {
+    content: '→';
+    margin-left: 0.5rem;
+    transition: var(--transition);
+}
+
+.btn-detail:hover::after {
+    transform: translateX(3px);
+}
+
+/* Pagination */
+.pagination {
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.pagination .page-item .page-link {
+    color: var(--secondary-color);
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    margin: 0 0.25rem;
+    padding: 0.6rem 1.2rem;
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--gradient-nature);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+}
+
+.pagination .page-item .page-link:hover {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+/* No Results Styling */
+.container p:contains("No attractions found") {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+    font-size: 1.1rem;
+    background: white;
+    border-radius: var(--border-radius);
+    border: 2px dashed #ddd;
+    margin: 2rem 0;
+    box-shadow: var(--shadow-light);
+}
+
+.container p:contains("No attractions found")::before {
+    content: '🔍';
+    display: block;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Loading States */
+.btn-detail.loading,
+.search-section .btn-primary.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-detail.loading::after,
+.search-section .btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Enhanced Animations */
+.attraction-card {
+    animation: slideUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.attraction-card:nth-child(1) { animation-delay: 0.1s; }
+.attraction-card:nth-child(2) { animation-delay: 0.2s; }
+.attraction-card:nth-child(3) { animation-delay: 0.3s; }
+.attraction-card:nth-child(4) { animation-delay: 0.4s; }
+.attraction-card:nth-child(5) { animation-delay: 0.5s; }
+.attraction-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Grid Layout Enhancement */
+.row {
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.col-md-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .places-header {
+        padding: 3rem 0 2rem 0;
+    }
+    
+    .places-header h1 {
+        font-size: 2rem;
+    }
+    
+    .search-section {
+        margin: -30px 1rem 2rem 1rem;
+        padding: 2rem 1.5rem;
+        border-radius: 15px;
+    }
+    
+    .attraction-card {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+    
+    .attraction-card h5 {
+        font-size: 1.2rem;
+        padding-left: 1.2rem;
+    }
+    
+    .container h2 {
+        font-size: 1.6rem;
+    }
+    
+    .container h3 {
+        font-size: 1.4rem;
+        margin: 2rem 0 1.5rem 0;
+    }
+    
+    .container h3::before {
+        left: -2rem;
+        font-size: 1.2rem;
+    }
+    
+    .btn-detail {
+        width: 100%;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-section {
+        margin: -20px 0.5rem 1.5rem 0.5rem;
+        padding: 1.5rem 1rem;
+    }
+    
+    .attraction-card {
+        padding: 1rem;
+    }
+    
+    .search-section form .row {
+        margin: 0;
+    }
+    
+    .search-section form .col-12 {
+        padding: 0;
+        margin-top: 1rem;
+    }
+    
+    .container h2 {
+        font-size: 1.4rem;
+    }
+    
+    .places-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .row {
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+    }
+    
+    .col-md-4 {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+/* Enhanced interactions */
+.attraction-card:hover h5 {
+    color: var(--secondary-color);
+    transition: var(--transition);
+}
+
+.attraction-card:hover p {
+    color: #555;
+    transition: var(--transition);
+}
+
+/* Form improvements */
+.search-section form p {
+    margin-bottom: 1.5rem;
+}
+
+.search-section form label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Better spacing for form elements */
+.search-section .row.g-3 > * {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* Notification styles (for JavaScript) */
+.alert {
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    box-shadow: var(--shadow-medium);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(46, 204, 113, 0.1));
+    border-left: 4px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(241, 196, 15, 0.1));
+    border-left: 4px solid var(--warning-color);
+    color: var(--warning-color);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.1));
+    border-left: 4px solid var(--info-color);
+    color: var(--info-color);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Places Header -->
+<section class="places-header">
+    <div class="container">
+        <h1 class="text-center mb-4">
+            <i class="fas fa-map-marked-alt me-3"></i>Discover Amazing Places
+        </h1>
+        <p class="text-center fs-5">Explore breathtaking destinations around the world</p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<div class="container my-4">
+    <h2 class="mb-4"></h2>
+
+    <div class="search-section">
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    {% if search_performed %}
+        <h3 class="mb-3">Attractions</h3>
+        {% if attractions %}
+            <div class="row">
+                {% for attraction in attractions %}
+                    <div class="col-md-4">
+                        <div class="attraction-card">
+                            <h5>{{ attraction.name }}</h5>
+                            <p><strong>City:</strong> {{ attraction.city.name }}</p>
+                            <p><strong>Category:</strong> {{ attraction.category }}</p>
+                            {% if attraction.entry_fee %}
+                                <p><strong>Entry Fee:</strong> {{ attraction.entry_fee }}</p>
+                            {% else %}
+                                <p><strong>Entry Fee:</strong> Free</p>
+                            {% endif %}
+                            <a href="{% url 'attraction_detail' attraction.id %}" class="btn-detail">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination mt-3">
+                {% if attractions.has_other_pages %}
+                    <ul class="pagination">
+                        {% if attractions.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ attractions.previous_page_number }}">Previous</a></li>
+                        {% endif %}
+                        {% for num in attractions.paginator.page_range %}
+                            {% if attractions.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if attractions.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ attractions.next_page_number }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No attractions found matching your criteria.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const searchForm = document.querySelector('.search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                const formInputs = this.querySelectorAll('input, select');
+                let hasValue = false;
+                
+                formInputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        hasValue = true;
+                    }
+                });
+                
+                if (!hasValue) {
+                    e.preventDefault();
+                    showNotification('Please enter search criteria', 'warning');
+                    return false;
+                }
+            });
+        }
+
+        // Smooth scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.place-card').forEach(card => {
+            card.style.animationPlayState = 'paused';
+            observer.observe(card);
+        });
+
+        // Search button animation
+        const searchButton = document.querySelector('.btn-search-places');
+        if (searchButton) {
+            searchButton.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Searching...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 2000);
+            });
+        }
+
+        // Image lazy loading error handling
+        document.querySelectorAll('.place-image').forEach(img => {
+            img.addEventListener('error', function() {
+                this.src = '/static/images/placeholder-place.jpg'; // Add a placeholder image
+                this.alt = 'Image not available';
+            });
+        });
+    });
+
+    // Toggle favorite function
+    function toggleFavorite(button) {
+        const icon = button.querySelector('i');
+        const isLiked = icon.classList.contains('fas');
+        
+        if (isLiked) {
+            icon.classList.remove('fas', 'fa-heart');
+            icon.classList.add('far', 'fa-heart');
+            button.style.background = 'white';
+            button.style.color = 'var(--primary-color)';
+            showNotification('Removed from favorites', 'info');
+        } else {
+            icon.classList.remove('far', 'fa-heart');
+            icon.classList.add('fas', 'fa-heart');
+            button.style.background = '#e74c3c';
+            button.style.color = 'white';
+            button.style.borderColor = '#e74c3c';
+            showNotification('Added to favorites', 'success');
+        }
+        
+        // Add a little animation
+        button.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            button.style.transform = 'scale(1)';
+        }, 200);
+    }
+
+    // Show notification function
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} position-fixed`;
+        notification.style.cssText = `
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease;
+        `;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${message}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Add CSS for notification animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}

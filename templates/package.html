@@ -1,0 +1,782 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Travel Packages - TravelBooking{% endblock %}
+
+{% block extra_css %}
+/* Enhanced Travel Packages Page Styles */
+<style>
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --accent-color: #e74c3c;
+    --warning-color: #f39c12;
+    --dark-text: #2c3e50;
+    --light-bg: #f8f9fa;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-accent: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1);
+    --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-radius: 16px;
+}
+
+/* Header Section */
+.packages-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 4rem 0 3rem 0;
+    margin-top: 70px;
+    position: relative;
+    overflow: hidden;
+}
+
+.packages-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><path d="M0 10c10-5 20 5 30 0s20-5 30 0 20 5 30 0 20-5 30 0v10H0z" fill="rgba(255,255,255,0.1)"/></svg>') repeat-x;
+    background-size: 200px 40px;
+    animation: wave 15s linear infinite;
+    opacity: 0.6;
+}
+
+@keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-200px); }
+}
+
+.packages-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.packages-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb */
+.breadcrumb-custom {
+    background: transparent;
+    padding: 1rem 0;
+    margin-bottom: 0;
+}
+
+.breadcrumb-custom .breadcrumb-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.breadcrumb-custom .breadcrumb-item a:hover {
+    color: white;
+}
+
+.breadcrumb-custom .breadcrumb-item.active {
+    color: white;
+    font-weight: 500;
+}
+
+/* Main Container */
+.container {
+    position: relative;
+}
+
+.container h2 {
+    color: var(--dark-text);
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.container h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60%;
+    height: 4px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+}
+
+/* Search Section */
+.search-section {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: -50px auto 3rem auto;
+    box-shadow: var(--shadow-heavy);
+    position: relative;
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+/* Form Styling */
+.search-section form .form-control,
+.search-section form .form-select,
+.search-section form input,
+.search-section form select {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: #fafbfc;
+}
+
+.search-section form .form-control:focus,
+.search-section form .form-select:focus,
+.search-section form input:focus,
+.search-section form select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.15);
+    background: white;
+    outline: none;
+}
+
+.search-section form label {
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.search-section .btn-primary {
+    background: var(--gradient-secondary);
+    border: none;
+    color: white;
+    padding: 0.85rem 2.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-section .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+}
+
+.search-section .btn-primary:hover::before {
+    left: 100%;
+}
+
+.search-section .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 87, 108, 0.6);
+    color: white;
+}
+
+/* Results Section */
+.result-section {
+    margin-top: 3rem;
+}
+
+.result-section h3 {
+    color: var(--dark-text);
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin: 3rem 0 2rem 0;
+    padding: 1rem 0;
+    border-bottom: 3px solid var(--primary-color);
+    position: relative;
+    display: inline-block;
+}
+
+.result-section h3::before {
+    content: '';
+    position: absolute;
+    left: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: 3px;
+}
+
+/* Card Items (Flights & Hotels) */
+.card-item {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    margin-bottom: 2rem;
+    padding: 2rem;
+    transition: var(--transition);
+    border: 1px solid #f0f2f5;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.card-item:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-heavy);
+}
+
+.card-item:hover::before {
+    opacity: 1;
+}
+
+/* Flight-specific styling */
+.card-item:has(h5):has(p:contains("→")) {
+    border-left: 4px solid var(--primary-color);
+}
+
+.card-item:has(h5):has(p:contains("→"))::before {
+    background: var(--gradient-primary);
+}
+
+/* Hotel-specific styling */
+.card-item:has(p:contains("★")) {
+    border-left: 4px solid var(--warning-color);
+}
+
+.card-item:has(p:contains("★"))::before {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+/* Card Content */
+.card-item h5 {
+    color: var(--dark-text);
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.card-item p {
+    margin-bottom: 0.5rem;
+    color: #666;
+    line-height: 1.5;
+    font-size: 1rem;
+}
+
+.card-item p:last-of-type {
+    margin-bottom: 1rem;
+}
+
+/* Flight route styling */
+.card-item p:contains("→") {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background: var(--light-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* Star rating styling */
+.card-item p:contains("★") {
+    color: var(--warning-color);
+    font-weight: 600;
+}
+
+/* Price styling */
+.card-item p:contains("Price"),
+.card-item p:contains("Economy"),
+.card-item p:contains("Business") {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+/* Available rooms styling */
+.card-item p:contains("Available") {
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+/* Select Buttons */
+.btn-select {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-select::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+}
+
+.btn-select:hover::before {
+    left: 100%;
+}
+
+.btn-select:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    color: white;
+    text-decoration: none;
+}
+
+/* Attractions Grid */
+.result-section .row {
+    margin-top: 1rem;
+}
+
+.result-section .col-md-4 {
+    margin-bottom: 2rem;
+}
+
+/* Attraction Cards */
+.result-section .col-md-4 .card-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.result-section .col-md-4 .card-item::before {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.result-section .col-md-4 .card-item h5 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+/* Entry fee styling */
+.card-item p:contains("Entry Fee") {
+    color: var(--secondary-color);
+    font-weight: 600;
+    background: rgba(46, 204, 113, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-top: auto;
+}
+
+.card-item p:contains("Free") {
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+/* No Results Styling */
+.result-section p:contains("No") {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+    font-size: 1.1rem;
+    background: var(--light-bg);
+    border-radius: var(--border-radius);
+    border: 2px dashed #ddd;
+    margin: 2rem 0;
+}
+
+.result-section p:contains("No")::before {
+    content: '🔍';
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Loading States */
+.btn-select.loading,
+.search-section .btn-primary.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-select.loading::after,
+.search-section .btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Enhanced Animations */
+.card-item {
+    animation: slideUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.card-item:nth-child(1) { animation-delay: 0.1s; }
+.card-item:nth-child(2) { animation-delay: 0.2s; }
+.card-item:nth-child(3) { animation-delay: 0.3s; }
+.card-item:nth-child(4) { animation-delay: 0.4s; }
+.card-item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .packages-header {
+        padding: 3rem 0 2rem 0;
+    }
+    
+    .packages-header h1 {
+        font-size: 2rem;
+    }
+    
+    .search-section {
+        margin: -30px 1rem 2rem 1rem;
+        padding: 2rem 1.5rem;
+        border-radius: 15px;
+    }
+    
+    .card-item {
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 12px;
+    }
+    
+    .card-item h5 {
+        font-size: 1.2rem;
+    }
+    
+    .card-item .text-end {
+        text-align: center !important;
+        margin-top: 1rem;
+    }
+    
+    .btn-select {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .result-section h3 {
+        font-size: 1.5rem;
+        margin: 2rem 0 1.5rem 0;
+    }
+    
+    .result-section .col-md-4 {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-section {
+        margin: -20px 0.5rem 1.5rem 0.5rem;
+        padding: 1.5rem 1rem;
+    }
+    
+    .card-item {
+        padding: 1rem;
+    }
+    
+    .search-section form .row {
+        margin: 0;
+    }
+    
+    .search-section form .col-12 {
+        padding: 0;
+        margin-top: 1rem;
+    }
+    
+    .container h2 {
+        font-size: 1.5rem;
+    }
+    
+    .packages-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Interactive hover effects */
+.card-item:hover h5 {
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.card-item:hover p {
+    color: #555;
+    transition: var(--transition);
+}
+
+/* Badge styling for amenities and categories */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 12px;
+    margin: 0.2rem 0.3rem 0.2rem 0;
+}
+
+.badge.bg-light {
+    background-color: var(--light-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+.badge.bg-primary {
+    background: var(--gradient-primary) !important;
+    border: none;
+}
+
+/* Form group improvements */
+.search-section form p {
+    margin-bottom: 1.5rem;
+}
+
+.search-section form label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Better spacing for form elements */
+.search-section .row.g-3 > * {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* Enhanced focus states */
+.search-section form input:focus,
+.search-section form select:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Packages Header -->
+<section class="packages-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-custom">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Travel Packages</li>
+            </ol>
+        </nav>
+        <h1 class="text-center mb-4">
+            <i class="fas fa-suitcase-rolling me-3"></i>Travel Packages
+        </h1>
+        <p class="text-center">Complete travel solutions with flights, hotels, and destinations</p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<div class="container my-4">
+    <h2 class="mb-4"></h2>
+    
+    <div class="search-section">
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Search Packages</button>
+            </div>
+        </form>
+    </div>
+    
+    {% if search_performed %}
+        <div class="result-section">
+            <h3>Available Flights</h3>
+            {% if flights %}
+                {% for flight in flights %}
+                <div class="card-item row align-items-center">
+                    <div class="col-md-4">
+                        <h5>{{ flight.airline.name }}</h5>
+                        <p>{{ flight.source_city.name }} → {{ flight.destination_city.name }}</p>
+                        <p><strong>Date:</strong> {{ flight.flight_date }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Economy:</strong> {{ flight.economy_price }} / seat</p>
+                        <p><strong>Business:</strong> {{ flight.business_price }} / seat</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <!-- selection happens by passing IDs to package booking page -->
+                        <!-- Inside flights loop -->
+                        <a href="{% if hotels %}{% url 'book_package' %}?flight_id={{ flight.id }}&hotel_id={{ hotels.0.id }}{% else %}#{% endif %}" class="btn-select">Select Flight</a>
+
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No flights found for your criteria.</p>
+            {% endif %}
+            
+            <h3>Available Hotels in {{ destination_city.name }}</h3>
+            {% if hotels %}
+                {% for hotel in hotels %}
+                <div class="card-item row align-items-center">
+                    <div class="col-md-4">
+                        <h5>{{ hotel.name }}</h5>
+                        <p>{{ hotel.city.name }}, {{ hotel.city.country }}</p>
+                        <p><strong>Rating:</strong> {{ hotel.star_rating }} ★</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>Price/Night:</strong> {{ hotel.price_per_night }}</p>
+                        <p><strong>Available Rooms:</strong> {{ hotel.available_rooms }}</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{% if flights %}{% url 'book_package' %}?flight_id={{ flights.0.id }}&hotel_id={{ hotel.id }}{% else %}#{% endif %}" class="btn-select">Select Hotel</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hotels available in the destination city.</p>
+            {% endif %}
+            
+            <h3>Popular Attractions</h3>
+            {% if attractions %}
+                <div class="row">
+                {% for attraction in attractions %}
+                    <div class="col-md-4">
+                        <div class="card-item">
+                            <h5>{{ attraction.name }}</h5>
+                            <p>{{ attraction.city.name }}</p>
+                            <p><strong>Category:</strong> {{ attraction.category }}</p>
+                            {% if attraction.entry_fee %}
+                                <p><strong>Entry Fee:</strong> {{ attraction.entry_fee }}</p>
+                            {% else %}
+                                <p><strong>Entry Fee:</strong> Free</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p>No attractions found in the destination city.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Process hotel amenities
+        document.querySelectorAll('.hotel-amenities').forEach(amenitiesDiv => {
+            const amenitiesText = amenitiesDiv.getAttribute('data-amenities');
+            if (amenitiesText) {
+                const amenities = amenitiesText.split(',').slice(0, 4); // Show first 4 amenities
+                amenitiesDiv.innerHTML = amenities.map(amenity => {
+                    if (amenity.trim()) {
+                        return `<span class="badge bg-light text-dark me-1 mb-1">${amenity.trim()}</span>`;
+                    }
+                }).join('');
+                
+                // Add "more" indicator if there are more amenities
+                if (amenitiesText.split(',').length > 4) {
+                    amenitiesDiv.innerHTML += '<span class="badge bg-primary">+More</span>';
+                }
+            }
+        });
+
+        // Form validation
+        const searchForm = document.querySelector('.search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                const formData = new FormData(this);
+                let hasData = false;
+                
+                for (let [key, value] of formData.entries()) {
+                    if (value.trim() !== '') {
+                        hasData = true;
+                        break;
+                    }
+                }
+                
+                if (!hasData) {
+                    e.preventDefault();
+                    alert('Please fill in search criteria');
+                    return false;
+                }
+            });
+        }
+
+        // Smooth scroll to sections
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Book package button animation
+        const bookButton = document.querySelector('.btn-book-package');
+        if (bookButton) {
+            bookButton.addEventListener('click', function(e) {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing Package...';
+                this.style.pointerEvents = 'none';
+                
+                // Re-enable after 3 seconds in case of issues
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.pointerEvents = 'auto';
+                }, 3000);
+            });
+        }
+    });
+</script>
+{% endblock %}

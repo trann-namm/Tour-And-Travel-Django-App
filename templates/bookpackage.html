@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Book Package - TravelBooking{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/book_package.css' %}">
+<style>
+    .booking-section {
+        padding: 2rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+    .package-details {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    .detail-card {
+        flex: 1;
+        min-width: 280px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 1rem;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .detail-card h5 {
+        margin-bottom: 0.5rem;
+    }
+    .btn-confirm {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .btn-confirm:hover {
+        background-color: #1e7e34;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4">Book Travel Package</h2>
+
+    <!-- Package Info: Selected Flight & Hotel -->
+    <div class="package-details">
+        {% if flight %}
+        <div class="detail-card">
+            <h5>Flight Details</h5>
+            <p><strong>Airline:</strong> {{ flight.airline.name }}</p>
+            <p><strong>From:</strong> {{ flight.source_city.name }} → <strong>To:</strong> {{ flight.destination_city.name }}</p>
+            <p><strong>Date:</strong> {{ flight.flight_date }}</p>
+            <p><strong>Economy Price:</strong> {{ flight.economy_price }}</p>
+            <p><strong>Business Price:</strong> {{ flight.business_price }}</p>
+        </div>
+        {% endif %}
+
+        {% if hotel %}
+        <div class="detail-card">
+            <h5>Hotel Details</h5>
+            <p><strong>Name:</strong> {{ hotel.name }}</p>
+            <p><strong>City:</strong> {{ hotel.city.name }}, {{ hotel.city.country }}</p>
+            <p><strong>Star Rating:</strong> {{ hotel.star_rating }} ★</p>
+            <p><strong>Price per Night:</strong> {{ hotel.price_per_night }}</p>
+            <p><strong>Available Rooms:</strong> {{ hotel.available_rooms }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Booking Form -->
+    <div class="booking-section">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-confirm">Confirm Package Booking</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-danger text-white d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <h4 class="mb-0">Confirm Cancellation</h4>
+                </div>
+                <div class="card-body text-center p-4">
+                    {% if booking_type == 'flight' %}
+                        <p class="lead">Are you sure you want to cancel this flight booking?</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><strong>Flight:</strong> {{ booking.flight }}</li>
+                            <li><strong>Date:</strong> {{ booking.date }}</li>
+                            <li><strong>Seats:</strong> {{ booking.seat }}</li>
+                        </ul>
+                    {% elif booking_type == 'hotel' %}
+                        <p class="lead">Are you sure you want to cancel this hotel reservation?</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><strong>Hotel:</strong> {{ booking.hotel_name }}</li>
+                            <li><strong>Date:</strong> {{ booking.date }}</li>
+                            <li><strong>Rooms:</strong> {{ booking.room }}</li>
+                        </ul>
+                    {% elif booking_type == 'package' %}
+                        <p class="lead">Are you sure you want to cancel this travel package?</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><strong>Flight:</strong> {{ booking.flight }}</li>
+                            <li><strong>Hotel:</strong> {{ booking.hotel_name }}</li>
+                            <li><strong>Date:</strong> {{ booking.date }}</li>
+                            <li><strong>Seats:</strong> {{ booking.seat }}</li>
+                            <li><strong>Rooms:</strong> {{ booking.room }}</li>
+                        </ul>
+                    {% endif %}
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        This action cannot be undone.
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-lg me-2">
+                            <i class="fas fa-times me-1"></i> Confirm Cancel
+                        </button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

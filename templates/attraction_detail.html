@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Attraction Details - TravelBooking{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/attraction_detail.css' %}">
+<style>
+    .attraction-detail {
+        padding: 2rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin: 2rem 0;
+    }
+    .attraction-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 1.5rem;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .attraction-card h3 {
+        margin-bottom: 1rem;
+    }
+    .btn-back {
+        display: inline-block;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .btn-back:hover {
+        background-color: #0056b3;
+        color: #fff;
+    }
+    .attraction-img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4">Attraction Details</h2>
+    <div class="attraction-detail">
+        <div class="attraction-card">
+            {% if attraction.image %}
+                <img src="{{ attraction.image.url }}" alt="{{ attraction.name }}" class="attraction-img">
+            {% endif %}
+            <h3>{{ attraction.name }}</h3>
+            <p><strong>City:</strong> {{ attraction.city.name }}, {{ attraction.city.country }}</p>
+            <p><strong>Category:</strong> {{ attraction.category }}</p>
+            {% if attraction.description %}
+                <p><strong>Description:</strong> {{ attraction.description }}</p>
+            {% endif %}
+            {% if attraction.entry_fee %}
+                <p><strong>Entry Fee:</strong> {{ attraction.entry_fee }}</p>
+            {% else %}
+                <p><strong>Entry Fee:</strong> Free</p>
+            {% endif %}
+            {% if attraction.opening_hours %}
+                <p><strong>Opening Hours:</strong> {{ attraction.opening_hours }}</p>
+            {% endif %}
+            <a href="{% url 'places' %}" class="btn-back mt-3">← Back to Attractions</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

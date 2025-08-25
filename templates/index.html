@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %} 
+{% block title %}Home - Travel & Tour{% endblock %}
+
+{% block content %}
+  <div class="text-center my-5">
+    <h1 class="fw-bold display-4">Discover Your Next Journey</h1>
+    <p class="lead text-muted mb-4">Book the best flights, hotels, and packages — all in one place.</p>
+
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="/flights" class="btn btn-primary btn-lg shadow rounded-pill px-4">✈️ Book a Flight</a>
+      <a href="/hotels" class="btn btn-success btn-lg shadow rounded-pill px-4">🏨 Book a Hotel</a>
+      <a href="/package" class="btn btn-warning btn-lg shadow rounded-pill px-4">📦 Book a Package</a>
+    </div>
+  </div>
+
+  <!-- Feature Section -->
+  <div class="row g-4 mt-5">
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0 rounded-4">
+        <img src="{% static 'img/plane.png' %}" class="card-img-top p-4" alt="Flights">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">Affordable Flights</h5>
+          <p class="text-muted">Find and book cheap flights from top airlines worldwide.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0 rounded-4">
+        <img src="{% static 'img/hotel1.png' %}" class="card-img-top p-4" alt="Hotels">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">Luxury Hotels</h5>
+          <p class="text-muted">Stay at the most comfortable and budget-friendly hotels.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0 rounded-4">
+        <img src="{% static 'img/travel.png' %}" class="card-img-top p-4" alt="Packages">
+        <div class="card-body text-center">
+          <h5 class="card-title fw-bold">Travel Packages</h5>
+          <p class="text-muted">Get complete travel packages with best deals for you.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
