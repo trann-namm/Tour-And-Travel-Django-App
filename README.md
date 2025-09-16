@@ -2,13 +2,13 @@
 This is a tour and travel django app to book hotels, flights, packages.
 This web app that uses django for backend and HTML,CSS, JavaScript for frontend.
 ## You can login and register as follows:
-![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/master/screenshots/login.JPG)
-![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/master/screenshots/register.JPG)
+![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/main/screenshots/login.JPG)
+![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/main/screenshots/register.JPG)
 # Index page
-![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/master/screenshots/1.JPG)
-![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/master/screenshots/2.JPG)
-![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/master/screenshots/3.JPG)
-![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/master/screenshots/4.JPG)
+![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/main/screenshots/1.jpg)
+![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/main/screenshots/2.jpg)
+![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/main/screenshots/3.jpg)
+![Login](https://github.com/trann-namm/Tour-And-Travel-Django-App/blob/main/screenshots/4.jpg)
 
 
 It is a basic django web app.
